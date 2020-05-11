@@ -1,0 +1,33 @@
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<p th:text="'hello SpringBoot'">hello thymeleaf</p>
+<script type="text/javascript">
+    // 初始化, 参数为url
+    // 依赖H5
+    var sse = new EventSource("sse");
+
+    sse.onmessage = function (e) {
+        console.log("message", e.data, e);
+    }
+
+    // 监听指定事件, (就不会进入onmessage了)
+    sse.addEventListener("me", function (e) {
+        console.log("me event", e.data);
+        // 如果不关闭,会自动重连
+        if (e.data == 3) {
+            sse.close();
+        }
+    });
+</script>
+</body>
+</html>
