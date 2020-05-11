@@ -56,7 +56,7 @@ public class WebSocketServer extends AbstractServer {
 
             serverBootstrap.group(mBossGroup, mWorkerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new WebSocketInitializer())
+                    .childHandler(mChannelInitializer)
                     .handler(new LoggingHandler(LogLevel.INFO));
 
             Channel channel = serverBootstrap.bind(mPort).sync().channel();
