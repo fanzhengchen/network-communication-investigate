@@ -1,8 +1,7 @@
 package com.qunhe.instdeco;
 
-import com.qunhe.instdeco.polling.HttpClient;
-import com.qunhe.instdeco.polling.server.HttpServer;
-import io.netty.channel.epoll.EpollEventLoopGroup;
+import com.qunhe.instdeco.http.HttpClient;
+import com.qunhe.instdeco.polling.HttpPollingServer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public class HttpPollingTest {
     public void testPolling() {
         final Thread cur = Thread.currentThread();
 
-        HttpServer server = new HttpServer.HttpServerBuilder()
+        HttpPollingServer server = new HttpPollingServer.HttpServerBuilder()
                 .port(port)
                 .bossGroup(new NioEventLoopGroup())
                 .workerGroup(new NioEventLoopGroup(1))

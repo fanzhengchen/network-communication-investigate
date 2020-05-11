@@ -1,16 +1,14 @@
-package com.qunhe.instdeco.polling;
+package com.qunhe.instdeco.http;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-
-import java.io.IOException;
 
 /**
  * @author shengxun
  */
 public class HttpClient {
 
-    private OkHttpClient okHttpClient = new OkHttpClient();
+    private OkHttpClient mOkHttpClient = new OkHttpClient();
 
     public HttpClient() {
 
@@ -21,7 +19,7 @@ public class HttpClient {
                 .url(url)
                 .build();
         try {
-            String result = okHttpClient.newCall(request)
+            String result = mOkHttpClient.newCall(request)
                     .execute()
                     .body()
                     .string();

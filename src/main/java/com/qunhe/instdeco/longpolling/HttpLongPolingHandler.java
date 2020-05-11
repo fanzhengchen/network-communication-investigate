@@ -1,4 +1,4 @@
-package com.qunhe.instdeco.polling.server;
+package com.qunhe.instdeco.longpolling;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -22,9 +22,15 @@ import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 /**
  * @author shengxun
  */
-public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject> {
+public class HttpLongPolingHandler extends SimpleChannelInboundHandler<HttpObject> {
 
-    private static final byte[] CONTENT = "QunHe Polling Test".getBytes();
+    private static final byte[] CONTENT = "QunHe Long Polling Test".getBytes();
+
+    private PullRequestProcessor mLongRequestProcessor;
+
+    public HttpLongPolingHandler(PullRequestProcessor requestProcessor) {
+        mLongRequestProcessor = requestProcessor;
+    }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
@@ -35,29 +41,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject> {
     protected void channelRead0(final ChannelHandlerContext ctx, final HttpObject msg)
             throws Exception {
         if (msg instanceof HttpRequest) {
-            HttpRequest req = (HttpRequest) msg;
-
-            boolean keepAlive = HttpUtil.isKeepAlive(req);
-            FullHttpResponse response = new DefaultFullHttpResponse(req.protocolVersion(), OK,
-                    Unpooled.wrappedBuffer(CONTENT));
-            response.headers()
-                    .set(CONTENT_TYPE, TEXT_PLAIN)
-                    .setInt(CONTENT_LENGTH, response.content().readableBytes());
-
-            if (keepAlive) {
-                if (!req.protocolVersion().isKeepAliveDefault()) {
-                    response.headers().set(CONNECTION, KEEP_ALIVE);
-                }
-            } else {
-                // Tell the client we're going to close the connection.
-                response.headers().set(CONNECTION, CLOSE);
-            }
-
-            ChannelFuture f = ctx.write(response);
-
-            if (!keepAlive) {
-                f.addListener(ChannelFutureListener.CLOSE);
-            }
+            mLongRequestProcessor.addRequest(new PullRequest(ctx, msg));
         }
     }
 }
+
